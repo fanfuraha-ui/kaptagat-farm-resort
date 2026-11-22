@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration of a farm-to-table spread: bread, vegetables, milk and plates on a wooden table">
+  <rect width="800" height="600" fill="#2F4A3A"/>
+  <circle cx="660" cy="110" r="160" fill="#3B5A45"/>
+  <rect y="330" width="800" height="270" fill="#8A5A3B"/>
+  <rect y="330" width="800" height="14" fill="#A06C48"/>
+  <ellipse cx="230" cy="420" rx="120" ry="34" fill="#F7F2E8"/>
+  <ellipse cx="230" cy="414" rx="86" ry="22" fill="#E9DFCB"/>
+  <ellipse cx="210" cy="408" rx="30" ry="12" fill="#B8653F"/>
+  <circle cx="250" cy="404" r="13" fill="#6E8B5E"/><circle cx="268" cy="412" r="9" fill="#D9473A"/>
+  <path d="M420 380 C420 330 560 330 560 380 Z" fill="#C98B4E"/>
+  <path d="M432 372 C450 352 470 352 488 372 M470 366 C490 346 510 346 530 366" stroke="#A86F3A" stroke-width="5" fill="none"/>
+  <rect x="410" y="380" width="160" height="14" rx="6" fill="#6B4430"/>
+  <rect x="610" y="250" width="70" height="140" rx="12" fill="#F7F2E8"/>
+  <rect x="610" y="250" width="70" height="30" rx="10" fill="#E9DFCB"/>
+  <rect x="622" y="235" width="46" height="22" fill="#B8653F"/>
+  <g transform="translate(70 230)">
+    <path d="M0 100 L140 100 L120 40 L20 40Z" fill="#B8653F"/>
+    <path d="M70 100 L140 100 L120 40 L70 40Z" fill="#9C5133"/>
+    <path d="M30 40 C20 0 50 -10 55 30" fill="#6E8B5E"/>
+    <path d="M60 40 C70 -20 100 -10 90 40" fill="#58744B"/>
+    <circle cx="105" cy="36" r="16" fill="#E2873F"/>
+  </g>
+  <ellipse cx="400" cy="520" rx="320" ry="16" fill="#6B4430" opacity=".6"/>
+</svg>

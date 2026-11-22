@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration of an indigenous forest path with a sunbird on a branch">
+  <defs>
+    <linearGradient id="f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C5CDB2"/><stop offset="1" stop-color="#6E8B5E"/></linearGradient>
+    <symbol id="t" viewBox="0 0 80 600"><rect x="30" y="0" width="22" height="600" fill="#3B2A1E"/><rect x="30" y="0" width="8" height="600" fill="#4E3828"/></symbol>
+  </defs>
+  <rect width="800" height="600" fill="url(#f)"/>
+  <g opacity=".45"><use href="#t" x="120" width="40" height="600"/><use href="#t" x="300" width="34" height="600"/><use href="#t" x="560" width="40" height="600"/></g>
+  <path d="M300 600 C360 470 430 430 420 330 L470 330 C480 430 560 480 620 600Z" fill="#E9DFCB"/>
+  <ellipse cx="160" cy="90" rx="220" ry="120" fill="#2F4A3A"/>
+  <ellipse cx="680" cy="70" rx="240" ry="130" fill="#253D2F"/>
+  <use href="#t" x="20" width="80" height="600"/>
+  <use href="#t" x="690" width="90" height="600"/>
+  <path d="M90 230 C220 210 300 240 380 220" stroke="#3B2A1E" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <g transform="translate(250 170)">
+    <ellipse cx="30" cy="30" rx="26" ry="18" fill="#1E6B5A"/>
+    <path d="M30 20 C40 30 40 42 20 46 Z" fill="#B8653F"/>
+    <circle cx="54" cy="20" r="12" fill="#1E6B5A"/>
+    <path d="M64 20 C82 26 92 36 96 44" stroke="#2B2B2B" stroke-width="3" fill="none"/>
+    <circle cx="57" cy="17" r="2.5" fill="#fff"/>
+    <path d="M6 32 L-30 52 L4 40Z" fill="#14493D"/>
+    <path d="M28 48 L26 62 M36 48 L36 62" stroke="#2B2B2B" stroke-width="3"/>
+  </g>
+  <path d="M0 520 C150 480 240 540 320 600 L0 600Z" fill="#2F4A3A"/>
+  <path d="M800 500 C660 480 600 550 590 600 L800 600Z" fill="#2F4A3A"/>
+</svg>
