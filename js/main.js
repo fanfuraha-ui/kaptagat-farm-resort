@@ -1,19 +1,20 @@
 /* Kaptagat Farm Resort: site script (no dependencies).
-   Edit CONFIG to update phone numbers, rates and the exchange rate. */
+   Edit CONFIG for phone numbers, rates and the exchange rate.
+   A room with kes: null shows "rate on request" and no estimate. */
 {
 const CONFIG = {
-  phone: "254725859860",       // main line (Google listing)
-  whatsapp: "254706508637",    // confirm this number is on WhatsApp before launch
-  email: "",                   // add the resort's email to show email buttons
+  phone: "254725859860",       // main line on the resort's Google listing
+  whatsapp: "254706508637",    // from the resort's Facebook page: confirm it is on WhatsApp
+  email: "",                   // add the resort's email to show the email buttons
   usdRate: 129,                // KES per 1 USD: update by hand
-  formEndpoint: "",            // e.g. "https://formspree.io/f/xxxxxx"; empty = WhatsApp hand-off
-  rooms: {                     // rates are indicative: confirm with the resort
-    standard: { name: "Standard Room",   kes: 4900,  max: 2 },
-    cottage:  { name: "Decagon Cottage", kes: 7700,  max: 2 },
-    pond:     { name: "Pond Cottage",    kes: 9500,  max: 2 },
-    cabin:    { name: "Deluxe Cabin",    kes: 9500,  max: 2 },
-    villa:    { name: "Garden Villa",    kes: 15000, max: 4 },
-    dorm:     { name: "Dormitory",       kes: 1500,  max: 20, perPerson: true }
+  formEndpoint: "",            // e.g. "https://formspree.io/f/xxxxxx"; empty = hand off to WhatsApp
+  rooms: {
+    cottage:  { name: "Decagon Cottage", kes: 7700 },
+    pond:     { name: "Pond Cottage",    kes: null },
+    standard: { name: "Standard Room",   kes: 4900 },
+    cabin:    { name: "Deluxe Cabin",    kes: null },
+    villa:    { name: "Villa",           kes: null },
+    dorm:     { name: "Dormitory",       kes: null }
   }
 };
 
@@ -52,14 +53,14 @@ $$("[data-tel]").forEach(a => { a.href = "tel:+" + CONFIG.phone; a.textContent =
 $$("[data-needs-email]").forEach(el => el.hidden = !CONFIG.email);
 $$("[data-email]").forEach(a => { a.href = "mailto:" + CONFIG.email; a.textContent = CONFIG.email; });
 
-/* Prices and currency toggle */
+/* Rates and currency toggle */
 let currency = store.lget("kfr-cur") || "KES";
 const paintPrices = () => {
   $$("[data-kes]").forEach(el => {
     const kes = +el.dataset.kes;
-    el.textContent = currency === "KES" ? fmtKES(kes) : fmtUSD(kes);
+    el.textContent = (el.dataset.from ? "From " : "") + (currency === "KES" ? fmtKES(kes) : fmtUSD(kes));
     const alt = el.parentElement.querySelector("[data-alt]");
-    if (alt) alt.textContent = "≈ " + (currency === "KES" ? fmtUSD(kes) : fmtKES(kes)) + " · " + (el.dataset.unit || "per night");
+    if (alt) alt.textContent = (currency === "KES" ? "≈ " + fmtUSD(kes) : "≈ " + fmtKES(kes)) + " · " + (el.dataset.unit || "per night");
   });
   $$(".cur button").forEach(b => b.setAttribute("aria-pressed", b.dataset.cur === currency));
 };
@@ -84,10 +85,8 @@ const setErr = (input, msg) => {
   if (box) box.textContent = msg || "";
   return !msg;
 };
-const totalFor = (roomId, nights, guests) => {
-  const r = CONFIG.rooms[roomId];
-  return r.perPerson ? r.kes * nights * guests : r.kes * nights;
-};
+const totalFor = (roomId, nights) => { const r = CONFIG.rooms[roomId]; return r.kes == null ? null : r.kes * nights; };
+const estimateLine = d => d.total == null ? "Rate: to be confirmed" : `Estimate: ${fmtKES(d.total)} (≈ ${fmtUSD(d.total)})`;
 const buildMessage = d => [
   "Booking inquiry: Kaptagat Farm Resort",
   d.name && `Name: ${d.name}`,
@@ -95,13 +94,13 @@ const buildMessage = d => [
   `Check-in: ${niceDate(d.checkin)}`,
   `Check-out: ${niceDate(d.checkout)} (${plural(d.nights, "night")})`,
   `Guests: ${d.guests}`,
-  `Estimate: ${fmtKES(d.total)} (≈ ${fmtUSD(d.total)})`,
+  estimateLine(d),
   d.phone && `Phone: ${d.phone}`,
   d.email && `Email: ${d.email}`,
   d.message && `Message: ${d.message}`
 ].filter(Boolean).join("\n");
 
-/* Booking bar */
+/* Booking strip */
 const bf = $("#booking-form");
 if (bf) {
   const ci = $("#bk-in"), co = $("#bk-out"), gu = $("#bk-guests"), rm = $("#bk-room"), q = $("#quote");
@@ -110,15 +109,15 @@ if (bf) {
     e.preventDefault();
     let ok = setErr(ci, ci.value ? "" : "Choose a check-in date");
     ok = setErr(co, co.value && co.value > ci.value ? "" : "Check-out must be after check-in") && ok;
-    const room = CONFIG.rooms[rm.value];
-    ok = setErr(gu, +gu.value <= room.max ? "" : `${room.name} sleeps up to ${room.max}`) && ok;
+    ok = setErr(gu, +gu.value >= 1 ? "" : "Enter the number of guests") && ok;
     if (!ok) { $("[aria-invalid=true]", bf).focus(); return; }
     const nights = nightsBetween(ci.value, co.value);
-    const d = { room: rm.value, checkin: ci.value, checkout: co.value, guests: +gu.value, nights, total: totalFor(rm.value, nights, +gu.value) };
+    const d = { room: rm.value, checkin: ci.value, checkout: co.value, guests: +gu.value, nights, total: totalFor(rm.value, nights) };
     store.set("kfr-booking", JSON.stringify(d));
     const msg = buildMessage(d);
-    $("#q-total").textContent = fmtKES(d.total);
-    $("#q-detail").textContent = `${room.name} · ${plural(nights, "night")} · ${plural(d.guests, "guest")} · ≈ ${fmtUSD(d.total)}`;
+    const room = CONFIG.rooms[d.room];
+    $("#q-total").textContent = d.total == null ? "Rate confirmed on inquiry" : fmtKES(d.total);
+    $("#q-detail").textContent = `${room.name} · ${plural(nights, "night")} · ${plural(d.guests, "guest")}` + (d.total == null ? "" : ` · ≈ ${fmtUSD(d.total)}`);
     $("#q-wa").href = waLink(msg);
     const qm = $("#q-mail"); if (qm) qm.href = mailLink("Booking inquiry", msg);
     q.classList.add("show");
@@ -146,14 +145,14 @@ if (inf) {
     ok = setErr(f("iq-out"), f("iq-out").value > f("iq-in").value ? "" : "Check-out must be after check-in") && ok;
     ok = setErr(f("iq-consent"), f("iq-consent").checked ? "" : "Please agree so we can reply to you") && ok;
     if (!ok) { $("[aria-invalid=true]", inf).focus(); return; }
-    const room = CONFIG.rooms[f("iq-room").value];
     const nights = nightsBetween(f("iq-in").value, f("iq-out").value);
-    const guests = +f("iq-guests").value;
-    const d = { name: f("iq-name").value.trim(), email: em, phone: f("iq-phone").value.trim(), room: f("iq-room").value, checkin: f("iq-in").value, checkout: f("iq-out").value, guests, nights, total: totalFor(f("iq-room").value, nights, guests), message: f("iq-msg").value.trim() };
+    const guests = +f("iq-guests").value || 1;
+    const room = CONFIG.rooms[f("iq-room").value];
+    const d = { name: f("iq-name").value.trim(), email: em, phone: f("iq-phone").value.trim(), room: f("iq-room").value, checkin: f("iq-in").value, checkout: f("iq-out").value, guests, nights, total: totalFor(f("iq-room").value, nights), message: f("iq-msg").value.trim() };
     const msg = buildMessage(d);
     $("#iq-wa").href = waLink(msg);
     const im = $("#iq-mail"); if (im) im.href = mailLink(`Booking inquiry: ${d.name}`, msg);
-    $("#iq-summary").textContent = `${room.name}, ${niceDate(d.checkin)} to ${niceDate(d.checkout)}, ${plural(nights, "night")}, ${plural(guests, "guest")}. Estimate ${fmtKES(d.total)} (≈ ${fmtUSD(d.total)}).`;
+    $("#iq-summary").textContent = `${room.name}, ${niceDate(d.checkin)} to ${niceDate(d.checkout)}, ${plural(nights, "night")}, ${plural(guests, "guest")}. ` + (d.total == null ? "We'll confirm the rate." : `Estimate ${fmtKES(d.total)} (≈ ${fmtUSD(d.total)}).`);
     if (CONFIG.formEndpoint) {
       try {
         const r = await fetch(CONFIG.formEndpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(d) });
@@ -166,44 +165,18 @@ if (inf) {
       }
     } else {
       $("#iq-title").textContent = "Your inquiry is ready to send.";
-      $("#iq-note").textContent = "Tap below to send it on WhatsApp. Your details are already filled in.";
+      $("#iq-note").textContent = "Send it on WhatsApp. Your details are already filled in.";
     }
     const box = $("#iq-success"); box.classList.add("show"); box.focus();
   });
 }
 
-/* Estate map: legend highlights its pin */
-$$(".legend li[data-pin]").forEach(li => {
+/* Site plan: key highlights its pin */
+$$(".key li[data-pin]").forEach(li => {
   const pin = $(`.estate .pin[data-pin="${li.dataset.pin}"]`);
   if (!pin) return;
   const on = () => pin.classList.add("on"), off = () => pin.classList.remove("on");
   li.addEventListener("mouseenter", on); li.addEventListener("mouseleave", off);
   li.addEventListener("focus", on); li.addEventListener("blur", off);
 });
-
-/* Gallery: filters + lightbox */
-const gal = $(".gallery");
-if (gal) {
-  const items = $$("figure", gal);
-  $$(".filters button").forEach(b => b.addEventListener("click", () => {
-    $$(".filters button").forEach(x => x.setAttribute("aria-pressed", x === b));
-    items.forEach(fig => fig.hidden = b.dataset.f !== "all" && fig.dataset.cat !== b.dataset.f);
-  }));
-  const preset = $(`.filters [data-f="${location.hash.slice(1)}"]`);
-  if (preset) preset.click();
-  const dlg = $("#lightbox"), img = $("#lb-img"), cap = $("#lb-cap");
-  let idx = 0;
-  const visible = () => items.filter(x => !x.hidden);
-  const show = i => {
-    const v = visible(); idx = (i + v.length) % v.length;
-    const fi = $("img", v[idx]);
-    img.src = fi.src; img.alt = fi.alt; cap.textContent = $("figcaption", v[idx]).textContent;
-  };
-  items.forEach(fig => $("button", fig).addEventListener("click", () => { show(visible().indexOf(fig)); dlg.showModal(); }));
-  $("#lb-prev").addEventListener("click", () => show(idx - 1));
-  $("#lb-next").addEventListener("click", () => show(idx + 1));
-  $("#lb-close").addEventListener("click", () => dlg.close());
-  dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
-  dlg.addEventListener("keydown", e => { if (e.key === "ArrowLeft") show(idx - 1); if (e.key === "ArrowRight") show(idx + 1); });
-}
 }
