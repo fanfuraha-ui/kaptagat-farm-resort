@@ -156,17 +156,22 @@ BOOKING = f'''<section class="booking" id="booking" aria-labelledby="h-book">
       <div class="field"><label for="bk-guests">Guests</label><input id="bk-guests" type="number" inputmode="numeric" min="1" max="40" value="2"><div class="err" id="bk-guests-err" aria-live="polite"></div></div>
       <div class="field go"><button class="btn" type="submit">Check availability</button></div>
     </form>
-    <div class="quote" id="quote" tabindex="-1" aria-live="polite">
-      <div><span class="sr">Estimated total:</span><strong id="q-total"></strong><span id="q-detail"></span>
-        <p class="note" style="margin:6px 0 0">Send your dates and we confirm availability and the final price. Nothing to pay to ask.</p></div>
-      <div class="acts"><a class="btn wa" id="q-wa" href="#">Send on WhatsApp</a><a class="btn ghost" id="q-mail" href="#" data-needs-email>Email us</a></div>
-    </div>
     <ul class="facts" aria-label="At a glance">
       <li>3-star hotel</li><li>Check-in from 2 pm</li><li>Restaurant and the Mill Bar</li><li>Room service</li>
       <li>Free secure parking</li><li>Wi-Fi</li><li>Conference hall for 200</li><li>30 min from Eldoret airport</li>
     </ul>
   </div>
-</section>'''
+</section>
+<dialog class="rvw" id="rvw" aria-labelledby="rvwT">
+  <div class="rvw-img" id="rvwImg"></div>
+  <div class="rvw-body">
+    <button type="button" class="rvw-x" id="rvwX" aria-label="Close">×</button>
+    <h3 id="rvwT">Your <em>stay</em></h3>
+    <div class="tk"><div class="tk-d" id="rvwDates"></div><dl id="rvwList"></dl></div>
+    <p class="rvw-fine">Send this on WhatsApp and we confirm availability and the final price. Nothing to pay to ask.</p>
+    <div class="rvw-act"><button type="button" class="btn ghost" id="rvwEdit">Edit</button><a class="btn wa" id="rvwWa" href="#">Send on WhatsApp</a><a class="btn ghost" id="rvwMail" href="#" data-needs-email>Email us</a></div>
+  </div>
+</dialog>'''
 
 # ---------------- Home ----------------
 home = head("Kaptagat Farm Resort | Garden cottages near Eldoret, Kenya",
@@ -418,9 +423,12 @@ gal = head("Gallery | Kaptagat Farm Resort",
     <p class="note">Illustrations stand in for photographs until the resort's own photos are added.</p>
   </div>
 </section>
-<dialog class="lightbox" id="lightbox" aria-label="Picture viewer">
-  <img id="lb-img" src="" alt="">
-  <div class="lb-bar"><p id="lb-cap"></p><div class="acts"><button type="button" id="lb-prev" aria-label="Previous">←</button><button type="button" id="lb-next" aria-label="Next">→</button><button type="button" id="lb-close">Close</button></div></div>
+<dialog class="glb" id="lightbox" aria-label="Picture viewer">
+  <div class="glb-top"><div><small id="gEy"></small><b id="gTi"></b></div><span class="glb-c"><b id="gCur">01</b> / <span id="gTot">01</span></span><button type="button" class="glb-b" id="gX" aria-label="Close">×</button></div>
+  <span class="glb-bar"><u id="gBar"></u></span>
+  <div class="glb-stage"><img id="gImg" src="" alt=""></div>
+  <div class="glb-th" id="gTh"></div>
+  <button type="button" class="glb-b glb-a" id="gP" aria-label="Previous picture">‹</button><button type="button" class="glb-b glb-a" id="gN" aria-label="Next picture">›</button>
 </dialog>
 ''' + FOOT
 

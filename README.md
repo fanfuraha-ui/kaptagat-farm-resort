@@ -7,7 +7,7 @@ Content is based on the resort's public listings (Google Hotels, Facebook, trave
 ## Structure
 - `index.html`, `accommodations.html`, `experiences.html`, `gallery.html`, `contact.html`
 - `css/style.css`: design tokens and components (decagon motif via the `--deca` clip-path)
-- `js/main.js`: booking bar, KES/USD toggle, inquiry form, map legend and gallery. **Edit `CONFIG` at the top for phones, rates and the exchange rate.**
+- `js/main.js`: booking bar, custom pickers (stay list, guests stepper, range calendar), booking review pop-up, KES/USD toggle, inquiry form, map legend and gallery viewer. **Edit `CONFIG` at the top for phones, rates and the exchange rate.**
 - `img/`: generated SVG illustrations
 - `tools/`: `build.py` regenerates the pages and `art.py` the illustrations (`python3 tools/build.py .`)
 

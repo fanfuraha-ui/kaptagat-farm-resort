@@ -58,9 +58,12 @@
     <p class="note">Illustrations stand in for photographs until the resort's own photos are added.</p>
   </div>
 </section>
-<dialog class="lightbox" id="lightbox" aria-label="Picture viewer">
-  <img id="lb-img" src="" alt="">
-  <div class="lb-bar"><p id="lb-cap"></p><div class="acts"><button type="button" id="lb-prev" aria-label="Previous">←</button><button type="button" id="lb-next" aria-label="Next">→</button><button type="button" id="lb-close">Close</button></div></div>
+<dialog class="glb" id="lightbox" aria-label="Picture viewer">
+  <div class="glb-top"><div><small id="gEy"></small><b id="gTi"></b></div><span class="glb-c"><b id="gCur">01</b> / <span id="gTot">01</span></span><button type="button" class="glb-b" id="gX" aria-label="Close">×</button></div>
+  <span class="glb-bar"><u id="gBar"></u></span>
+  <div class="glb-stage"><img id="gImg" src="" alt=""></div>
+  <div class="glb-th" id="gTh"></div>
+  <button type="button" class="glb-b glb-a" id="gP" aria-label="Previous picture">‹</button><button type="button" class="glb-b glb-a" id="gN" aria-label="Next picture">›</button>
 </dialog>
 </main>
 <footer class="site-foot">
